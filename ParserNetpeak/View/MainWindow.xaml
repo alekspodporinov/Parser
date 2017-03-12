@@ -1,0 +1,82 @@
+﻿<Window x:Class="ParserNetpeak.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ParserNetpeak"
+        xmlns:vm="clr-namespace:ParserNetpeak.ViewModel"
+        d:DataContext="{d:DesignInstance vm:ParsViewModel}"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    
+    <Window.Resources>
+        
+        <Style x:Key="FontSizeHeaderText">
+            <Setter Property="Control.FontFamily" Value="Verdana" />
+            <Setter Property="Control.FontSize" Value="18"/>
+        </Style>
+        
+        <Style TargetType="TextBlock" x:Key="TreggerDescriptionStyle">
+            <Setter Property="Control.FontFamily" Value="Verdana" />
+            <Setter Property="Control.FontSize" Value="18"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=TextDescription, Path=Text}"
+                        Value="No description">
+                    <Setter Property="Foreground" Value="Red"/>
+                    <Setter Property="Control.FontFamily" Value="Verdana" />
+                    <Setter Property="Control.FontSize" Value="18"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.8*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <Menu Grid.ColumnSpan="2" >
+            <MenuItem Header="File">
+                <MenuItem Header="Open form database" Command="{Binding OpenDataWindowCommand}"></MenuItem>
+                <MenuItem Header="Save to database" Command="{Binding SaveDataCommand}"></MenuItem>
+                <Separator></Separator>
+                <MenuItem Header="Exit"></MenuItem>
+            </MenuItem>
+        </Menu>
+
+        <ScrollViewer Grid.Column="0" Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,-3,0,3">
+            <StackPanel >
+                <TextBlock Text="Enter Url:" FontSize="20" FontWeight="Bold"></TextBlock>
+                <TextBox x:Name="UrlTextBlox" FontSize="20" BorderBrush="Blue"></TextBox>
+                <Button Command="{Binding ParseCommand}"
+        CommandParameter="{Binding Text, ElementName=UrlTextBlox}" FontSize="20" Background="GreenYellow" Foreground="Black" >Parse</Button>
+                
+                <StackPanel Margin="10">
+                    <TextBlock Style="{StaticResource FontSizeHeaderText}" Text="Server Response Code:" FontWeight="Bold"></TextBlock>
+                    <TextBlock Margin="10" Style="{StaticResource FontSizeHeaderText}" TextWrapping="WrapWithOverflow" Text="{Binding ParsPage.ServerResponseCode}"></TextBlock>
+                    <TextBlock Style="{StaticResource FontSizeHeaderText}" Text="Title:" FontWeight="Bold"></TextBlock>
+                    <TextBlock Margin="10" Style="{StaticResource FontSizeHeaderText}" TextWrapping="WrapWithOverflow" Text="{Binding ParsPage.Title}"></TextBlock>
+                    <TextBlock Style="{StaticResource FontSizeHeaderText}" Text="Description:" FontWeight="Bold"></TextBlock>
+                    <TextBlock Margin="10" Style="{StaticResource TreggerDescriptionStyle}" TextWrapping="WrapWithOverflow" Text="{Binding ParsPage.Description}" x:Name="TextDescription"></TextBlock>
+                    <TextBlock Style="{StaticResource FontSizeHeaderText}" Text="Server Response Time:" FontWeight="Bold"></TextBlock>
+                    <TextBlock Margin="10" Style="{StaticResource FontSizeHeaderText}" TextWrapping="WrapWithOverflow" Text="{Binding ParsPage.ServerResponseTime}"></TextBlock>
+                </StackPanel>
+                
+            </StackPanel>
+        </ScrollViewer>
+        
+        <DataGrid Grid.Column="1" x:Name="Imported" FontSize="15" VerticalAlignment="Top" ItemsSource="{Binding ParsPage.Tags}" HorizontalScrollBarVisibility="Auto"  AutoGenerateColumns="False"  Grid.Row="1">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Tag" Binding="{Binding Name}"/>
+                <DataGridTextColumn Width="Auto" Header="InnerHtml" Binding="{Binding InnerHtml}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        
+    </Grid>
+</Window>
